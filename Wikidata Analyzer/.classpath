@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Jena"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Virtuoso"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JCommon 1.0.23"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JFreeChart 1.0.19"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jung_PageRank"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jexcelapi"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
