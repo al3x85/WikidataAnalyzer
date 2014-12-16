@@ -60,7 +60,7 @@ public class SPAQRL {
 	public static void main(String[] args)  {
 		// TODO Auto-generated method stub
 		
-		Writer.deleteFile("Ergebnis.txt");
+		//Writer.deleteFile("Ergebnis.txt");
 		/*Writer.deleteFile("Klassen.txt");
 		Writer.deleteFile("Distribution_Item.txt");
 		Writer.deleteFile("Distribution_Class.txt");
@@ -70,9 +70,12 @@ public class SPAQRL {
 		Writer.deleteFile("Distribution_Classes_with_Instances_Draw_y.txt");
 		Writer.deleteFile("Distribution_Items_with_Statements_Draw_x.txt");
 		Writer.deleteFile("Distribution_Items_with_Statements_Draw_y.txt");*/
+		Writer.deleteFile("Instances_belonging_to_Classes_x.txt");
+		Writer.deleteFile("Instances_belonging_to_Classes_y.txt");
 		
+		ClassAnalyse.InstancesBelongingToClasses();
 		//ClassAnalyse.NumberOfSubClassOfEntity();
-		ClassAnalyse.NumberOfDirectAndTransitiveSubClassOfEntity();
+		//ClassAnalyse.NumberOfDirectAndTransitiveSubClassOfEntity();
 		/*ClassAnalyse.DirectSubClassOfEntity();
 		ClassAnalyse.DirectSubClassOfClass();
 		ClassAnalyse.NumberOfInstancesOfClasses2();
@@ -102,13 +105,13 @@ public class SPAQRL {
 		//ItemAnalyse.ItemsWithAtLeast50Statement();
 		//ItemAnalyse.ItemsWithAtLeast100Statement();
 		//superClassOf();
-		AnzahlTriple();
-		AnzahlEntity();
-		AnzahlDistPredicate();
-		AnzahlDistSubject();
-		AnzahlDistObject();
-		NumberOfClassesUsed();
-		ClassesUsed();
+		//AnzahlTriple();
+		//AnzahlEntity();
+		//AnzahlDistPredicate();
+		//AnzahlDistSubject();
+		//AnzahlDistObject();
+		//NumberOfClassesUsed();
+		//ClassesUsed();
 		//subClassOf();		
 		
 		System.out.println("Alles fertig.");

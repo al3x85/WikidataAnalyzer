@@ -261,5 +261,27 @@ public class ClassAnalyse {
 		System.out.println("ClassesCreateDrawDistribution() Fertig.");
 	}
 	
+	public static void InstancesBelongingToClasses() {
+		int[] j = {2,3,4,5,6,7,8,9,10,11,12};
+		for (int i=0; i<=j.length-1; i=i+1) {
+		
+		VirtGraph graph = new VirtGraph ("http://simpleStatements", "jdbc:virtuoso://localhost:1111", "dba", "dba");
+		VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create("SELECT count(?summe) As ?summen WHERE {{ SELECT count(?s) As ?summe FROM <http://simpleStatements> WHERE {?s <http://www.wikidata.org/entity/P31c> ?o} GROUP By ?s ?l ORDER BY DESC(?summe)} FILTER (?summe > "+j[i]+")}", graph);
+		Writer.schreiben(j[i],"Instances_belonging_to_Classes_x.txt");
+		try {
+			ResultSet results = vqe.execSelect();
+			while (results.hasNext()) {
+				QuerySolution result = results.nextSolution();
+				RDFNode s = result.get("summen");
+				String s2 = s.toString();
+				String[] s3 = s2.split(Pattern.quote("^"),2);
+				Writer.schreiben(s3[0].toString(),"Instances_belonging_to_Classes_y.txt");
+			}} 
+			finally {
+				vqe.close();			
+		}
+		}
+		System.out.println("InstanceBelongingToClasses() Fertig.");
+}
 
 }

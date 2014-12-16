@@ -10,6 +10,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -119,7 +120,9 @@ public class BarChart extends ApplicationFrame {
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         // disable bar outlines...
+        plot.getRenderer().setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        plot.getRenderer().setBaseItemLabelsVisible(true);
         renderer.setDrawBarOutline(false);
         
         // set up gradient paints for series...

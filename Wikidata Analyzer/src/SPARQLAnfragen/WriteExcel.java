@@ -45,6 +45,7 @@ public class WriteExcel {
       int row = 2;
       int column = 3;
       String currentNodeLabel="";
+      String LabelLang = "en";
 	  
 	  
 	public void setOutputFile(String inputFile) {
@@ -61,7 +62,10 @@ public class WriteExcel {
 	    workbook.createSheet("Report", 0);
 	    WritableSheet excelSheet = workbook.getSheet(0);
 	    createLabel(excelSheet);
-	    createEntry(new ArrayList<String>(), "http://www.wikidata.org/entity/Q35120", 2, excelSheet);
+	    TreeMapEntry root = new TreeMapEntry();
+	    root.Label = "entity";
+	    root.ItemID = "http://www.wikidata.org/entity/Q35120";
+	    createEntry(new ArrayList<TreeMapEntry>(), root , 2, excelSheet);
 	    /*createContent(excelSheet,2,0, listChildsToAnalyse.get(listChildsToAnalyse.size()-1).toString());
 	    for (int x=0;x<=10000;x++) {
 	    createContent(excelSheet,lastRowNumber,0, listChildsToAnalyse.get(listChildsToAnalyse.size()-1).toString());
@@ -100,59 +104,7 @@ public class WriteExcel {
 
 	  }
 
-	 /* public void createContent(WritableSheet sheet, int rowNumber, int columnNumber, String root) throws WriteException,
-	      RowsExceededException {
-		  listRoot.add(root);
-	      listChildsToAnalyse.remove(listChildsToAnalyse.size()-1);
-	      VirtGraph graph = new VirtGraph ("http://simpleStatements", "jdbc:virtuoso://localhost:1111", "dba", "dba");
-	      VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create("SELECT ?s WHERE {?s <http://www.wikidata.org/entity/P279c> <"+listRoot.get(listRoot.size()-1)+">}", graph);
-			try {
-				ResultSet results = vqe.execSelect();
-				while (results.hasNext()) {
-					QuerySolution result = results.nextSolution();
-					RDFNode s = result.get("s");
-					String s2 = s.toString();
-					listRoot.add(s2);
-					listChildsToAnalyse.add(s2);
-					for (int n=0; n<=(listRoot.size()-1);n++) {
-						addLabel(sheet, column+n, rowNumber, listRoot.get(n).toString() );
-					}
-					//addLabel(sheet, column, row, s2);
-					//addLabel(sheet, 2,row,listRoot.get(0).toString());
-					row++;
-					VirtuosoQueryExecution vqe2 = VirtuosoQueryExecutionFactory.create("SELECT (COUNT(?s) AS ?Summe) FROM <http://simpleStatements> WHERE {?s <http://www.wikidata.org/entity/P279c> <"+s2+"> OPTION(TRANSITIVE, T_DISTINCT)}", graph);
-					try {
-						ResultSet results2 = vqe2.execSelect();
-						while (results2.hasNext()) {
-							QuerySolution result2 = results2.nextSolution();
-							RDFNode summe = result2.get("Summe");
-							String summe2 = summe.toString();
-							String[] summe3 = summe2.split(Pattern.quote("^"),2);
-							addNumber(sheet, columnNumber, rowNumber, Integer.parseInt(summe3[0].toString()));
-							rowNumber++;
-							lastRowNumber = rowNumber;
-							listRoot.remove(listRoot.size()-1);	
-							
-					}
-					}
-					finally {
-						vqe2.close();
-					}
-					
-					
-				}
-			} catch (Exception e) {
-				// TODO: handle exception
-			} finally {
-				vqe.close();
-				listChildsToAnalyse.remove(listChildsToAnalyse.size()-1);
-			}	
-			System.out.println("createSubclassesAndWeight() Fertig.");
-	      
-	      
-	    
-	  }*/
-
+	
 	  private void addCaption(WritableSheet sheet, int column, int row, String s)
 	      throws RowsExceededException, WriteException {
 	    Label label;
@@ -176,40 +128,49 @@ public class WriteExcel {
 
 	  public static void main(String[] args) throws WriteException, IOException {
 	    WriteExcel test = new WriteExcel();
-	    test.setOutputFile("D:/workspace Test/Wikidata Analyzer/TreeMapSourceData.xls");
+	    test.setOutputFile("C:/Users/alex/git/LocalWikidataAnalyzer/Wikidata Analyzer/TreeMapSourceData.xls");
 	    test.write();
 	    System.out
-	        .println("Please check the result file under D:/workspace Test/Wikidata Analyzer/TreeMapSourceData.xls ");
+	        .println("Please check the result file under C:/Users/alex/git/LocalWikidataAnalyzer/Wikidata Analyzer ");
 	  }
 	  
-	  public void createEntry(List<String> ancestors, String current, int row, WritableSheet sheet) throws WriteException,
+	  public void createEntry(List<TreeMapEntry> ancestors, TreeMapEntry current, int row, WritableSheet sheet) throws WriteException,
       RowsExceededException {
 		  //gibt die Hierarchietiefe an
 		  if(ancestors.size() < 3)
 		  {
 		  VirtGraph graph = new VirtGraph ("http://simpleStatements", "jdbc:virtuoso://localhost:1111", "dba", "dba");
-	      VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create("SELECT ?s ?label WHERE {?s <http://www.wikidata.org/entity/P279c> <"+current+">}", graph);
-	      List<String> subnodes = new ArrayList<String>();
+	      VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create("SELECT distinct ?s ?o WHERE {{?s <http://www.wikidata.org/entity/P279c> <"+current.ItemID+"> .} OPTIONAL {{?s <http://www.w3.org/2000/01/rdf-schema#label> ?o} FILTER (lang(?o) = \"\" || lang(?o) = \""+LabelLang+ "\")}}", graph);
+	      List<TreeMapEntry> subnodes = new ArrayList<TreeMapEntry>();
 	      try {
 				ResultSet results = vqe.execSelect();
 				while (results.hasNext()) {
 					QuerySolution result = results.nextSolution();
 					RDFNode s = result.get("s");
-					//RDFNode label = result.get("label");
 					String s2 = s.toString();
+				
+					RDFNode o = result.get("o");
+					String o2 = "";
+					if (o != null) {
+						o2 = o.toString();
+					}
+					
+					TreeMapEntry e =new TreeMapEntry();
+					e.ItemID=s2;
+					e.Label=o2;
 					//String label2 = label.toString();
-					subnodes.add(s2);
-				}
+					subnodes.add(e);
+				 }
 	      }
 	      finally {
 	    	  vqe.close();
 	      }
-	      ArrayList<String> clone = new ArrayList<String>(ancestors); 
+	      ArrayList<TreeMapEntry> clone = new ArrayList<TreeMapEntry>(ancestors); 
 	      clone.add(current);
 	      if (!subnodes.isEmpty()) {
-	    	  for (String node : subnodes) {
+	    	  for (TreeMapEntry node : subnodes) {
 	    		  String summe4="";
-	    		  VirtuosoQueryExecution vqe2 = VirtuosoQueryExecutionFactory.create("SELECT (COUNT(?s) AS ?Summe) FROM <http://simpleStatements> WHERE {?s <http://www.wikidata.org/entity/P279c> <"+node+"> OPTION(TRANSITIVE, T_DISTINCT)}", graph);
+	    		  VirtuosoQueryExecution vqe2 = VirtuosoQueryExecutionFactory.create("SELECT (COUNT(?s) AS ?Summe) FROM <http://simpleStatements> WHERE {?s <http://www.wikidata.org/entity/P279c> <"+node.ItemID+"> OPTION(TRANSITIVE, T_DISTINCT)}", graph);
 					try {
 						ResultSet results2 = vqe2.execSelect();
 						while (results2.hasNext()) {
@@ -232,14 +193,33 @@ public class WriteExcel {
 		  }
 	  }
 	  
-	  public void createContent(int row, String weight, List<String> nodes, String currentNode, WritableSheet sheet) throws WriteException,
+	  public void createContent(int row, String weight, List<TreeMapEntry> nodes, TreeMapEntry currentNode, WritableSheet sheet) throws WriteException,
       RowsExceededException{
 		  sheet.insertRow(row);
 		  addLabel(sheet, 0, row, weight);
 		  for (int i=0; i<=nodes.size()-1;i++) {
-			  addLabel(sheet, i+2, row, nodes.get(i).toString());
+			  TreeMapEntry x = nodes.get(i);
+			  if(x.Label != "")
+			  {
+				  addLabel(sheet, i+2, row , x.Label.replace("@"+LabelLang, ""));
+			  }
+			  else
+			  {
+				  addLabel(sheet, i+2, row , x.ItemID);
+				 
+			  }
 		}
-		  addLabel(sheet, nodes.size()+2, row , currentNode);
+		  if(currentNode.Label != "")
+		  {
+			  addLabel(sheet, nodes.size()+2, row , currentNode.Label.replace("@"+LabelLang, ""));
+		  }
+		  else
+		  {
+			  addLabel(sheet, nodes.size()+2, row , currentNode.ItemID);
+			 
+		  }
 	  }
 
+	  
+	  
 }

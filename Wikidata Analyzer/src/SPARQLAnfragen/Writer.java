@@ -26,7 +26,7 @@ public class Writer {
 		file = new File(filename);
 		try {
 			writer = new FileWriter(file, true);
-			writer.write(s);
+			writer.write(s+"\n");
 			writer.flush();
 			writer.close();
 		}
